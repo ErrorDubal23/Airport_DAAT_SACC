@@ -37,6 +37,7 @@ public class Flight {
         this.minutesDurationArrival = minutesDurationArrival;
         
         this.plane.addFlight(this);
+        //Comentario para ver si funciona el git 
     }
 
     public Flight(String id, Plane plane, Location departureLocation, Location scaleLocation, Location arrivalLocation, LocalDateTime departureDate, int hoursDurationArrival, int minutesDurationArrival, int hoursDurationScale, int minutesDurationScale) {
