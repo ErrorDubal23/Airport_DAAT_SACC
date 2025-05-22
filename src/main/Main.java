@@ -4,7 +4,7 @@
  */
 package main;
 
-import airport.AirportFrame;
+import view.AirportFrame;
 import com.formdev.flatlaf.FlatDarkLaf;
 import javax.swing.UIManager;
 
