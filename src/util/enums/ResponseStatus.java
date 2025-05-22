@@ -13,7 +13,7 @@ package util.enums;
 public enum ResponseStatus {
     //Para el exito
     SUCCESS(200, "Operacion exitosa"),
-    CREARED(201, "Producto creado correctamente"),
+    CREATED(201, "Producto creado correctamente"),
     
     //Errores producidos por parte del usuario
     

@@ -6,42 +6,43 @@ package util.responses;
 
 import util.enums.ResponseStatus;
 
-/**
- *
- * @author dubalaguilar
- */
 public class Response {
     private final ResponseStatus status;
     private final String message;
     private final Object data;
-    
-    public Response(ResponseStatus status, String message, Object data) {
+
+    // Constructor principal (privado o protegido para forzar el uso de los métodos estáticos)
+    private Response(ResponseStatus status, String message, Object data) {
         this.status = status;
         this.message = message;
         this.data = data;
     }
-    
-    // Para éxito con datos
+
+   
     public static Response success(Object data) {
         return new Response(ResponseStatus.SUCCESS, ResponseStatus.SUCCESS.getDefaultMessage(), data);
     }
-    
-    // Para éxito con mensaje personalizado
+
     public static Response success(String message, Object data) {
         return new Response(ResponseStatus.SUCCESS, message, data);
     }
-    
-    // Para errores con estado y mensaje personalizado
+
+    public static Response success(ResponseStatus status, String message, Object data) {
+        return new Response(status, message, data);
+    }
+
+    public static Response success() {
+        return new Response(ResponseStatus.SUCCESS, ResponseStatus.SUCCESS.getDefaultMessage(), null);
+    }
+
     public static Response error(ResponseStatus status, String message) {
         return new Response(status, message, null);
     }
-    
-    // Para errores con estado (usa mensaje por defecto del enum)
+
     public static Response error(ResponseStatus status) {
         return new Response(status, status.getDefaultMessage(), null);
     }
-    
-    //Getters 
+
     public boolean isSuccess() {
         return status.getCode() >= 200 && status.getCode() < 300;
     }

@@ -20,7 +20,12 @@ public class ErrorMessages {
     //Errores para los Flight
     public static final String FLIGHT_ID_FORMAT = "Formato del ID es inválido: debe de ser XXXYY (3 letras más 3 numeros)";
     public static final String FLIGHT_DATE_PAST = "La fecha de vuelo no puede ser en el pasado";
-    
+    public static final String FLIGHT_DURATION_INVALID = "La duración del vuelo debe ser mayor a 00:00";
+    public static final String SCALE_TIME_INVALID = "El tiempo de escala debe ser mayor a 00:00 si existe escala";
+    public static final String RELATED_RESOURCE_NOT_FOUND = "Avión o ubicación no encontrados";
+    public static final String FLIGHT_NOT_FOUND = "Vuelo no encontrado";
+    public static final String DELAY_TIME_INVALID = "El tiempo de retraso debe ser positivo";
+
     //Errores comunes
     public static final String FIELD_REQUIRED = "El campo '%s' es obligatorio";
     public static final String INVALID_DATE_RANGE = "Rango de fechas inválido";
