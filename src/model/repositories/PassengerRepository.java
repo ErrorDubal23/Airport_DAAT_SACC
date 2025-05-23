@@ -29,7 +29,7 @@ public class PassengerRepository extends BaseRepositoryImpl<Passenger, Long> {
         return passenger.getId();
     }
 
-    // Métodos específicos para Passenger
+    
     public List<Passenger> findByCountry(String country) {
         return items.stream()
                 .filter(passenger -> passenger.getCountry().equalsIgnoreCase(country))

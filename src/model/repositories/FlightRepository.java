@@ -29,7 +29,7 @@ public class FlightRepository extends BaseRepositoryImpl<Flight, String> {
         return flight.getId();
     }
 
-    // Métodos específicos para Flight
+   
     public List<Flight> findByPlaneId(String planeId) {
         return items.stream()
                 .filter(flight -> flight.getPlane().getId().equals(planeId))

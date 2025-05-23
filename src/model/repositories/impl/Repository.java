@@ -18,4 +18,5 @@ public interface Repository<T, ID> {
     Optional<T> findById(ID id);
     List<T> findAll();
     boolean exists(ID id);
+    boolean update(T item);
 }

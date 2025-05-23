@@ -6,6 +6,7 @@ package model.entities;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -115,5 +116,9 @@ public class Flight {
     public int getNumPassengers() {
         return passengers.size();
     }
+    
+    public List<Passenger> getPassengers() {
+    return new ArrayList<>(passengers); 
+}
     
 }

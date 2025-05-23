@@ -29,7 +29,7 @@ public class LocationRepository extends BaseRepositoryImpl<Location, String> {
         return location.getAirportId();
     }
 
-    // Métodos específicos para Location
+   
     public List<Location> findByCountry(String country) {
         return items.stream()
                 .filter(location -> location.getAirportCountry().equalsIgnoreCase(country))

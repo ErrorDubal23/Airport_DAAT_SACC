@@ -39,14 +39,28 @@ public abstract class  BaseRepositoryImpl<T, ID> implements Repository <T, ID>{
 
     @Override
     public List<T> findAll() {
-        return new ArrayList<>(items); // Retorna copia para evitar modificaciones externas
+        return new ArrayList<>(items); // Retorna copia para evitar modificaciones de otros lados
     }
 
     @Override
     public boolean exists(ID id) {
         return items.stream().anyMatch(item -> getId(item).equals(id));
     }
-
-    // Método abstracto para obtener el ID de un item
+    @Override
+    public boolean update (T item){
+        if (item == null) return false;
+        
+        ID id = getId(item);
+        for (int i = 0; i < items.size(); i++) {
+            if (getId(items.get(i)).equals(id)) {
+                items.set(i, item);
+                return true;
+            }
+        }
+        return false;
+    }
+    // Metodo abstracto para obtener el ID de un item
     protected abstract ID getId(T item);
+    
+    
 }

@@ -36,6 +36,9 @@ public class Passenger {
     }
 
     public void addFlight(Flight flight) {
+        if (this.flights == null) {
+            this.flights = new ArrayList<>();
+        }
         this.flights.add(flight);
     }
     
@@ -99,6 +102,10 @@ public class Passenger {
         return firstname + " " + lastname;
     }
     
+    public void setFlights(ArrayList<Flight> flights) {
+        this.flights = flights != null ? new ArrayList<>(flights) : new ArrayList<>();
+    }
+
     public String generateFullPhone() {
         return "+" + countryPhoneCode + " " + phone;
     }

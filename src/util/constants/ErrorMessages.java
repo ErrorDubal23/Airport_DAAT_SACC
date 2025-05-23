@@ -25,9 +25,21 @@ public class ErrorMessages {
     public static final String RELATED_RESOURCE_NOT_FOUND = "Avión o ubicación no encontrados";
     public static final String FLIGHT_NOT_FOUND = "Vuelo no encontrado";
     public static final String DELAY_TIME_INVALID = "El tiempo de retraso debe ser positivo";
+    public static final String FLIGHT_FULL_CAPACITY = "El vuelo ha alcanzado su capacidad máxima";
+    public static final String PASSENGER_ALREADY_IN_FLIGHT = "El pasajero ya está registrado en este vuelo";
 
+    
+    // Para Location
+    public static final String LOCATION_ID_FORMAT = "El ID del aeropuerto debe tener exactamente 3 letras mayúsculas (ej: BOG)";
+    public static final String LOCATION_DUPLICATE = "Ya existe un aeropuerto con este ID";
+    public static final String COORDINATES_INVALID = "Latitud y longitud deben ser números válidos (ej: 4.7123)";
+    public static final String INVALID_LATITUDE = "La latitud debe estar entre -90 y 90 grados";
+    public static final String INVALID_LONGITUDE = "La longitud debe estar entre -180 y 180 grados";
+    public static final String LOCATION_ALREADY_EXISTS = "Ya existe un aeropuerto con este ID";
+    public static final String LOCATION_NOT_FOUND = "Aeropuerto no encontrado";
+    
     //Errores comunes
-    public static final String FIELD_REQUIRED = "El campo '%s' es obligatorio";
+    public static final String FIELD_REQUIRED = "Todos los campos son obligatorios"; 
     public static final String INVALID_DATE_RANGE = "Rango de fechas inválido";
     
     //Esto es para mensajes dinamicos con ayuda de helpers (No es seguro que se termine de implementar)
