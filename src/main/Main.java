@@ -13,7 +13,7 @@ import javax.swing.UIManager;
  * @author dubalaguilar
  */
 public class Main {
-    //Comentario de prueba
+    //Comentario de prueba 2
     public static void main(String args[]) {
         System.setProperty("flatlaf.useNativeLibrary", "false");
 
