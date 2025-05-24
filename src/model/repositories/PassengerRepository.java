@@ -35,7 +35,8 @@ public class PassengerRepository extends BaseRepositoryImpl<Passenger, Long> {
                 .filter(passenger -> passenger.getCountry().equalsIgnoreCase(country))
                 .toList();
     }
-
+    
+    //El metodo .getFullName(), quiza, se separe de la clase passager por Single Responsability si se opta por la opcion 1.
     public List<Passenger> findByName(String name) {
         return items.stream()
                 .filter(passenger -> passenger.getFullname().toLowerCase().contains(name.toLowerCase()))

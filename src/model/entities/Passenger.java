@@ -97,7 +97,8 @@ public class Passenger {
     public void setCountry(String country) {
         this.country = country;
     }
-    
+    //Opcion 1: Como no hay ningun atributo que se refiera a Fullname
+    //Fuera por Single Responsability
     public String getFullname() {
         return firstname + " " + lastname;
     }
@@ -105,15 +106,16 @@ public class Passenger {
     public void setFlights(ArrayList<Flight> flights) {
         this.flights = flights != null ? new ArrayList<>(flights) : new ArrayList<>();
     }
-
+    //Fuera por Single Responsability
     public String generateFullPhone() {
         return "+" + countryPhoneCode + " " + phone;
     }
-    
+    //Fuera por Single Responsability
     public int calculateAge() {
         return Period.between(birthDate, LocalDate.now()).getYears();
     }
-    
+    //Opcion 2:
+    //Fuera por Single Responsability y se crea un getter para los flights
     public int getNumFlights() {
         return flights.size();
     }

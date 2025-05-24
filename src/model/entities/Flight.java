@@ -104,11 +104,12 @@ public class Flight {
     public void setDepartureDate(LocalDateTime departureDate) {
         this.departureDate = departureDate;
     }
-    
+    //Fuera por Single Responsability
+    //Aparte que este 
     public LocalDateTime calculateArrivalDate() {
         return departureDate.plusHours(hoursDurationScale).plusHours(hoursDurationArrival).plusMinutes(minutesDurationScale).plusMinutes(minutesDurationArrival);
     }
-    
+    //Fuera por Single Responsability
     public void delay(int hours, int minutes) {
         this.departureDate = this.departureDate.plusHours(hours).plusMinutes(minutes);
     }
