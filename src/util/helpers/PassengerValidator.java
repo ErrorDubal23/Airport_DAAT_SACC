@@ -66,7 +66,7 @@ public class PassengerValidator {
             }
         } catch (DateTimeParseException e) {
             return Response.error(ResponseStatus.BAD_REQUEST, 
-                "Formato de fecha inválido (yyyy-MM-dd)");
+                "Fecha de nacimiento inexistente");
         }
 
         return Response.success();

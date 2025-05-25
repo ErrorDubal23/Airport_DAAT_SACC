@@ -31,7 +31,7 @@ public class LocationController {
             String latitudeStr,
             String longitudeStr
     ) {
-        // Validaciones básicas de campos vacíos
+        // Validaciones de campos vacíos
         if (airportId.isEmpty()) {
             return Response.fieldRequired("ID del aeropuerto");
         }
@@ -57,7 +57,7 @@ public class LocationController {
         city = city.trim();
         country = country.trim();
 
-        // Validar formato de ID (3 letras mayúsculas)
+        // Validar formato de ID
         if (!airportId.matches("^[A-Z]{3}$")) {
             return Response.error(ResponseStatus.BAD_REQUEST, "El ID del aeropuerto debe ser 3 letras mayúsculas");
         }

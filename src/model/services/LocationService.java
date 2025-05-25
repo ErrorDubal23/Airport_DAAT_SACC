@@ -44,7 +44,7 @@ public class LocationService {
             double longitude
     ) {
         try {
-            // Validar coordenadas (4 decimales máximo)
+            // Validar coordenadas 
             if (!isValidCoordinate(latitude, -90, 90) || !isValidCoordinate(longitude, -180, 180)) {
                 return Response.error(ResponseStatus.BAD_REQUEST, "Coordenadas fuera de rango válido");
             }

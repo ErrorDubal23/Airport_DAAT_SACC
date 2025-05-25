@@ -32,9 +32,6 @@ import util.responses.Response;
  */
 public class AirportFrame extends javax.swing.JFrame {
 
-    /**
-     * Creates new form AirportFrame
-     */
     private int x, y;
     private final PassengerRepository passengerRepo;
     private final PlaneRepository planeRepo;
@@ -68,7 +65,7 @@ public class AirportFrame extends javax.swing.JFrame {
         jTextField1.setText("");
         jTextField5.setText("");
         jTextField4.setText("");
-        // No es necesario limpiar los JComboBox de mes y día si siempre tienen valores
+        
     }
 
     private void clearLocationFields() {
@@ -91,7 +88,7 @@ public class AirportFrame extends javax.swing.JFrame {
     private void clearFlightFields() {
         jTextField19.setText("");
         jTextField21.setText("");
-        // Resetear comboboxes si es necesario
+        
     }
 
     private void blockPanels() {
@@ -938,7 +935,7 @@ public class AirportFrame extends javax.swing.JFrame {
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addGap(507, 507, 507)
                         .addComponent(jButton1)))
-                .addContainerGap(555, Short.MAX_VALUE))
+                .addContainerGap(552, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1012,7 +1009,7 @@ public class AirportFrame extends javax.swing.JFrame {
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jComboBox5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextField28, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(829, Short.MAX_VALUE))
+                .addContainerGap(822, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButton12, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1381,7 +1378,7 @@ public class AirportFrame extends javax.swing.JFrame {
                             .addComponent(jLabel46))
                         .addGap(79, 79, 79)
                         .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jComboBox6, 0, 105, Short.MAX_VALUE)
+                            .addComponent(jComboBox6, 0, 100, Short.MAX_VALUE)
                             .addComponent(jComboBox7, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addGap(820, 820, 820))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel12Layout.createSequentialGroup()
@@ -1480,7 +1477,7 @@ public class AirportFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_userActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-        // Obtener datos sin trim (el controller se encargará)
+        // Obtener datos sin trim
         String idStr = jTextField2.getText();
         String firstname = jTextField7.getText();
         String lastname = jTextField6.getText();
@@ -1545,15 +1542,7 @@ public class AirportFrame extends javax.swing.JFrame {
             String latitudeStr = jTextField17.getText().trim();
             String longitudeStr = jTextField18.getText().trim();
 
-            // Validar campos vacíos
-            if (id.isEmpty() || name.isEmpty() || city.isEmpty() || country.isEmpty()
-                    || latitudeStr.isEmpty() || longitudeStr.isEmpty()) {
-                JOptionPane.showMessageDialog(this,
-                        "Todos los campos son obligatorios",
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE);
-                return;
-            }
+            
 
             // Usar el controlador para registrar la ubicación
             LocationController locationController = new LocationController();
@@ -1597,15 +1586,15 @@ public class AirportFrame extends javax.swing.JFrame {
             String scaleLocationId = jComboBox4.getSelectedItem().toString();
 
             // Manejar escala opcional
-            String hoursScaleStr = "";
-            String minutesScaleStr = "";
+            String hoursScaleStr = "0";  
+            String minutesScaleStr = "0";
 
             if (!scaleLocationId.isEmpty()) {
-                hoursScaleStr = MONTH4.getSelectedItem().toString();
-                minutesScaleStr = DAY4.getSelectedItem().toString();
-            }
+            hoursScaleStr = MONTH4.getSelectedItem().toString();
+            minutesScaleStr = DAY4.getSelectedItem().toString();
+        }
 
-            // Resto de datos...
+            // Resto de datos
             String year = jTextField21.getText();
             String month = MONTH1.getSelectedItem().toString();
             String day = DAY1.getSelectedItem().toString();
@@ -1622,7 +1611,7 @@ public class AirportFrame extends javax.swing.JFrame {
                     hoursScaleStr, minutesScaleStr
             );
 
-            // Manejar respuesta...
+            // Manejar respuesta
             if (response.isSuccess()) {
                 JOptionPane.showMessageDialog(this, "Vuelo registrado exitosamente");
                 this.jComboBox5.addItem(id.trim().toUpperCase());

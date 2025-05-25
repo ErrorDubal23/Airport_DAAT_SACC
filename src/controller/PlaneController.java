@@ -15,6 +15,7 @@ import util.responses.Response;
  * @author dubalaguilar
  */
 public class PlaneController {
+
     private final PlaneService planeService;
 
     public PlaneController() {
@@ -22,18 +23,28 @@ public class PlaneController {
     }
 
     public Response registerPlane(
-        String planeId, 
-        String brand, 
-        String model,
-        String maxCapacityStr, 
-        String airline
+            String planeId,
+            String brand,
+            String model,
+            String maxCapacityStr,
+            String airline
     ) {
-        // Validaciones básicas de campos vacíos
-        if (planeId.isEmpty()) return Response.fieldRequired("ID del avión");
-        if (brand.isEmpty()) return Response.fieldRequired("marca");
-        if (model.isEmpty()) return Response.fieldRequired("modelo");
-        if (maxCapacityStr.isEmpty()) return Response.fieldRequired("capacidad máxima");
-        if (airline.isEmpty()) return Response.fieldRequired("aerolínea");
+        // Validaciones  de campos vacíos
+        if (planeId.isEmpty()) {
+            return Response.fieldRequired("ID del avión");
+        }
+        if (brand.isEmpty()) {
+            return Response.fieldRequired("marca");
+        }
+        if (model.isEmpty()) {
+            return Response.fieldRequired("modelo");
+        }
+        if (maxCapacityStr.isEmpty()) {
+            return Response.fieldRequired("capacidad máxima");
+        }
+        if (airline.isEmpty()) {
+            return Response.fieldRequired("aerolínea");
+        }
 
         // Formatear datos
         planeId = planeId.trim().toUpperCase();
@@ -43,26 +54,26 @@ public class PlaneController {
 
         // Validar formato ID (XXYYYYY)
         if (!planeId.matches("^[A-Z]{2}\\d{5}$")) {
-            return Response.error(ResponseStatus.BAD_REQUEST, 
-                "El ID del avión debe tener formato XXYYYYY (2 letras + 5 dígitos)");
+            return Response.error(ResponseStatus.BAD_REQUEST,
+                    "El ID del avión debe tener formato XXYYYYY (2 letras + 5 dígitos)");
         }
 
         try {
             // Convertir capacidad
             int maxCapacity = Integer.parseInt(maxCapacityStr.trim());
-            
+
             // Validar número positivo
             if (maxCapacity <= 0) {
-                return Response.error(ResponseStatus.BAD_REQUEST, 
-                    "La capacidad máxima debe ser un número positivo");
+                return Response.error(ResponseStatus.BAD_REQUEST,
+                        "La capacidad máxima debe ser un número positivo");
             }
 
             // Pasar al servicio para validaciones adicionales
             return planeService.registerPlane(planeId, brand, model, maxCapacity, airline);
-            
+
         } catch (NumberFormatException e) {
-            return Response.error(ResponseStatus.BAD_REQUEST, 
-                "La capacidad máxima debe ser un número válido");
+            return Response.error(ResponseStatus.BAD_REQUEST,
+                    "La capacidad máxima debe ser un número válido");
         }
     }
 
@@ -70,8 +81,8 @@ public class PlaneController {
         try {
             return Response.success(planeService.getAllPlanesSorted());
         } catch (Exception e) {
-            return Response.error(ResponseStatus.INTERNAL_ERROR, 
-                "Error al obtener aviones: " + e.getMessage());
+            return Response.error(ResponseStatus.INTERNAL_ERROR,
+                    "Error al obtener aviones: " + e.getMessage());
         }
     }
 

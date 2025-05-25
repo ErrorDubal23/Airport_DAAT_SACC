@@ -33,17 +33,17 @@ public class FlightValidator {
         Repository<Plane, String> planeRepository,
         Repository<Location, String> locationRepository
     ) {
-        // 1. Validar unicidad del ID
+        // Validar unicidad del ID
         if (flightRepository.findById(flightId).isPresent()) {
             return Response.error(ResponseStatus.CONFLICT, "Ya existe un vuelo con este ID");
         }
 
-        // 2. Validar existencia del avión
+        //  Validar existencia del avión
         if (!planeRepository.findById(planeId).isPresent()) {
             return Response.error(ResponseStatus.NOT_FOUND, "Avión no encontrado");
         }
 
-        // 3. Validar existencia de ubicaciones
+        //  Validar existencia de ubicaciones
         if (!locationRepository.findById(departureLocationId).isPresent()) {
             return Response.error(ResponseStatus.NOT_FOUND, "Ubicación de salida no encontrada");
         }
@@ -51,28 +51,30 @@ public class FlightValidator {
             return Response.error(ResponseStatus.NOT_FOUND, "Ubicación de llegada no encontrada");
         }
 
-        // 4. Validar ubicación de escala si existe
+        // Validar ubicación de escala si existe
         if (scaleLocationId != null && !locationRepository.findById(scaleLocationId).isPresent()) {
             return Response.error(ResponseStatus.NOT_FOUND, "Ubicación de escala no encontrada");
         }
 
-        // 5. Validar fecha futura
+        //  Validar fecha futura
         if (departureDate.isBefore(LocalDateTime.now())) {
             return Response.error(ResponseStatus.BAD_REQUEST, "La fecha de salida debe ser futura");
         }
 
-        // 6. Validar que origen y destino sean diferentes
+        //  Validar que origen y destino sean diferentes
         if (departureLocationId.equals(arrivalLocationId)) {
             return Response.error(ResponseStatus.BAD_REQUEST, "Origen y destino no pueden ser iguales");
         }
 
-        // 7. Validar que escala no sea igual a origen/destino
+        // Validar que escala no sea igual a origen/destino
+        if (hoursScale > 0 || minutesScale > 0) {
         if (scaleLocationId != null && 
             (scaleLocationId.equals(departureLocationId) || scaleLocationId.equals(arrivalLocationId))) {
             return Response.error(ResponseStatus.BAD_REQUEST, 
                 "La escala no puede ser igual al origen o destino");
         }
+    }
 
-        return Response.success();
+    return Response.success();
     }
 }
