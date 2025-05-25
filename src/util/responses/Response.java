@@ -58,4 +58,26 @@ public class Response {
     public Object getData() {
         return data;
     }
+    
+    
+    
+    public static Response fieldRequired(String fieldName) {
+    return Response.error(ResponseStatus.BAD_REQUEST, 
+        String.format("El campo %s es requerido", fieldName));
+}
+
+public static Response invalidFormat(String fieldName, String expectedFormat) {
+    return Response.error(ResponseStatus.BAD_REQUEST, 
+        String.format("Formato inválido para %s. Se esperaba: %s", fieldName, expectedFormat));
+}
+
+public static Response numberRequired(String fieldName) {
+    return Response.error(ResponseStatus.BAD_REQUEST, 
+        String.format("%s debe ser un número válido", fieldName));
+}
+
+public static Response positiveNumberRequired(String fieldName) {
+    return Response.error(ResponseStatus.BAD_REQUEST, 
+        String.format("%s debe ser un número positivo", fieldName));
+}
 }

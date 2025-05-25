@@ -14,60 +14,34 @@ import util.responses.Response;
  * @author dubalaguilar
  */
 public final class LocationValidator {
-    private static final DecimalFormat COORDINATE_FORMAT = new DecimalFormat("#.####");
-    private static final int MAX_DECIMAL_DIGITS = 4;
-
-    public static Response validate(
+   public static Response validateDomainRules(
         String airportId,
         String name,
         String city,
         String country,
-        String latitudeStr,
-        String longitudeStr
+        double latitude,
+        double longitude
     ) {
-        // Validacion 1: Campos no vacíos
-        if (airportId.isEmpty() || name.isEmpty() || city.isEmpty() || country.isEmpty()) {
+        // Validación de longitud mínima para nombres
+        if (name.length() < 3) {
             return Response.error(ResponseStatus.BAD_REQUEST, 
-                String.format(ErrorMessages.FIELD_REQUIRED, "Todos los campos"));
+                "El nombre del aeropuerto debe tener al menos 3 caracteres");
         }
 
-        // Validacion 2: Formato del ID
-        if (!airportId.matches("^[A-Z]{3}$")) {
-            return Response.error(ResponseStatus.BAD_REQUEST, ErrorMessages.LOCATION_ID_FORMAT);
+        if (city.length() < 2) {
+            return Response.error(ResponseStatus.BAD_REQUEST, 
+                "La ciudad debe tener al menos 2 caracteres");
         }
 
-        // Validacion 3: Coordenadas numericas
-        try {
-            double latitude = Double.parseDouble(latitudeStr);
-            double longitude = Double.parseDouble(longitudeStr);
+        if (country.length() < 2) {
+            return Response.error(ResponseStatus.BAD_REQUEST, 
+                "El país debe tener al menos 2 caracteres");
+        }
 
-            // Validacion 4: Rango de coordenadas
-            if (latitude < -90 || latitude > 90) {
-                return Response.error(ResponseStatus.BAD_REQUEST, ErrorMessages.INVALID_LATITUDE);
-            }
-            if (longitude < -180 || longitude > 180) {
-                return Response.error(ResponseStatus.BAD_REQUEST, ErrorMessages.INVALID_LONGITUDE);
-            }
-
-            // Validacion 5: Máximo 4 decimales (maneja casos sin punto decimal)
-            if (latitudeStr.contains(".")) {
-                String decimalPart = latitudeStr.split("\\.")[1];
-                if (decimalPart.length() > MAX_DECIMAL_DIGITS) {
-                    return Response.error(ResponseStatus.BAD_REQUEST, 
-                        "Latitud: máximo " + MAX_DECIMAL_DIGITS + " decimales permitidos");
-                }
-            }
-            
-            if (longitudeStr.contains(".")) {
-                String decimalPart = longitudeStr.split("\\.")[1];
-                if (decimalPart.length() > MAX_DECIMAL_DIGITS) {
-                    return Response.error(ResponseStatus.BAD_REQUEST, 
-                        "Longitud: máximo " + MAX_DECIMAL_DIGITS + " decimales permitidos");
-                }
-            }
-
-        } catch (NumberFormatException e) {
-            return Response.error(ResponseStatus.BAD_REQUEST, ErrorMessages.COORDINATES_INVALID);
+        // Validación adicional de caracteres no permitidos en nombres
+        if (!name.matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$")) {
+            return Response.error(ResponseStatus.BAD_REQUEST,
+                "El nombre del aeropuerto solo puede contener letras y espacios");
         }
 
         return Response.success();

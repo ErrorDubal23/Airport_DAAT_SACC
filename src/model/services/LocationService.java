@@ -40,46 +40,64 @@ public class LocationService {
             String name,
             String city,
             String country,
-            String latitude,
-            String longitude
+            double latitude,
+            double longitude
     ) {
-        // Validación
-        Response validation = LocationValidator.validate(
-                airportId, name, city, country, latitude, longitude
-        );
-        if (!validation.isSuccess()) {
-            return validation;
-        }
-
-        // Verificar si ya existe
-        if (locationRepository.findById(airportId).isPresent()) {
-            return Response.error(ResponseStatus.CONFLICT, ErrorMessages.LOCATION_ALREADY_EXISTS);
-        }
-
-        // Crear y guardar
         try {
-            double lat = Double.parseDouble(latitude);
-            double lon = Double.parseDouble(longitude);
-            Location location = new Location(airportId, name, city, country, lat, lon);
+            // Validar coordenadas (4 decimales máximo)
+            if (!isValidCoordinate(latitude, -90, 90) || !isValidCoordinate(longitude, -180, 180)) {
+                return Response.error(ResponseStatus.BAD_REQUEST, "Coordenadas fuera de rango válido");
+            }
+
+            // Validar decimales en coordenadas
+            if (hasMoreThanFourDecimals(latitude) || hasMoreThanFourDecimals(longitude)) {
+                return Response.error(ResponseStatus.BAD_REQUEST, "Las coordenadas no pueden tener más de 4 decimales");
+            }
+
+            // Validaciones específicas con LocationValidator
+            Response validation = LocationValidator.validateDomainRules(
+                    airportId, name, city, country, latitude, longitude
+            );
+            if (!validation.isSuccess()) {
+                return validation;
+            }
+
+            // Verificar duplicados
+            if (locationRepository.findById(airportId).isPresent()) {
+                return Response.error(ResponseStatus.CONFLICT, ErrorMessages.LOCATION_ALREADY_EXISTS);
+            }
+
+            // Crear y guardar ubicación
+            Location location = new Location(airportId, name, city, country, latitude, longitude);
             locationRepository.add(location);
+
             return Response.success(ResponseStatus.CREATED, "Aeropuerto registrado exitosamente", location);
-        } catch (NumberFormatException e) {
-            return Response.error(ResponseStatus.BAD_REQUEST, ErrorMessages.COORDINATES_INVALID);
+
+        } catch (Exception e) {
+            return Response.error(ResponseStatus.INTERNAL_ERROR,
+                    "Error al registrar ubicación: " + e.getMessage());
         }
     }
-    
+
+    private boolean isValidCoordinate(double value, double min, double max) {
+        return value >= min && value <= max;
+    }
+
+    private boolean hasMoreThanFourDecimals(double value) {
+        String str = String.valueOf(value);
+        int decimalIndex = str.indexOf('.');
+        return decimalIndex != -1 && str.substring(decimalIndex + 1).length() > 4;
+    }
+
     public List<Location> getAllLocationsSorted() {
         List<Location> locations = locationRepository.findAll();
         locations.sort(Comparator.comparing(Location::getAirportId));
         return locations;
     }
 
-    /**
-     * Obtiene una ubicación por su ID
-     */
     public Response getLocationById(String airportId) {
         return locationRepository.findById(airportId)
-            .map(location -> Response.success(location))
-            .orElse(Response.error(ResponseStatus.NOT_FOUND, ErrorMessages.LOCATION_NOT_FOUND));
+                .map(location -> Response.success(location))
+                .orElse(Response.error(ResponseStatus.NOT_FOUND, ErrorMessages.LOCATION_NOT_FOUND));
     }
 }

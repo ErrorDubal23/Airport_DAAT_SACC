@@ -110,8 +110,14 @@ public class Flight {
     }
     
     public void delay(int hours, int minutes) {
-        this.departureDate = this.departureDate.plusHours(hours).plusMinutes(minutes);
+    // Validar que al menos uno de los valores sea positivo
+    if (hours <= 0 && minutes <= 0) {
+        throw new IllegalArgumentException("El retraso debe ser mayor que 00:00");
     }
+    
+    // Aplicar el retraso
+    this.departureDate = this.departureDate.plusHours(hours).plusMinutes(minutes);
+}
     
     public int getNumPassengers() {
         return passengers.size();

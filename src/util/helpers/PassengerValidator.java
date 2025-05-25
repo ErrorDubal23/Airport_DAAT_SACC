@@ -16,12 +16,7 @@ import util.responses.Response;
  * @author dubalaguilar
  */
 public class PassengerValidator {
-   private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    private static final int MAX_ID_DIGITS = 15;
-    private static final int MAX_PHONE_CODE_DIGITS = 3;
-    private static final int MAX_PHONE_DIGITS = 11;
-
-    public static Response validate(
+   public static Response validateDomainRules(
         long id,
         String firstName,
         String lastName,
@@ -30,47 +25,50 @@ public class PassengerValidator {
         long phoneNumber,
         String country
     ) {
-        // Validación 1: ID único, mayor o igual a 0 y máximo 15 dígitos
-        if (id < 0) {
-            return Response.error(ResponseStatus.BAD_REQUEST, ErrorMessages.PASSENGER_ID_INVALID);
+        // Validar nombre y apellido (no vacíos ya se validó en controller)
+        if (firstName.length() < 2) {
+            return Response.error(ResponseStatus.BAD_REQUEST, 
+                "El nombre debe tener al menos 2 caracteres");
         }
-        if (String.valueOf(id).length() > MAX_ID_DIGITS) {
-            return Response.error(ResponseStatus.BAD_REQUEST, ErrorMessages.PASSENGER_ID_INVALID);
-        }
-
-        // Validación 2: Campos no vacíos
-        if (firstName == null || firstName.trim().isEmpty() ||
-            lastName == null || lastName.trim().isEmpty() ||
-            country == null || country.trim().isEmpty()) {
-            return Response.error(ResponseStatus.BAD_REQUEST, ErrorMessages.FIELD_REQUIRED);
+        if (lastName.length() < 2) {
+            return Response.error(ResponseStatus.BAD_REQUEST, 
+                "El apellido debe tener al menos 2 caracteres");
         }
 
-        // Validación 3: Fecha de nacimiento válida
+        // Validar código de teléfono (3 dígitos máximo)
+        if (phoneCode < 0) {
+            return Response.error(ResponseStatus.BAD_REQUEST, 
+                "Código de teléfono no puede ser negativo");
+        }
+        if (String.valueOf(phoneCode).length() > 3) {
+            return Response.error(ResponseStatus.BAD_REQUEST, 
+                "Código de teléfono no puede tener más de 3 dígitos");
+        }
+
+        // Validar número de teléfono (11 dígitos máximo)
+        if (phoneNumber < 0) {
+            return Response.error(ResponseStatus.BAD_REQUEST, 
+                "Número de teléfono no puede ser negativo");
+        }
+        if (String.valueOf(phoneNumber).length() > 11) {
+            return Response.error(ResponseStatus.BAD_REQUEST, 
+                "Número de teléfono no puede tener más de 11 dígitos");
+        }
+
+        // Validar fecha
         try {
-            LocalDate birthDate = LocalDate.parse(birthDateStr, DATE_FORMATTER);
-            if (birthDate.isAfter(LocalDate.now())) {
-                return Response.error(ResponseStatus.BAD_REQUEST, "La fecha de nacimiento no puede ser futura");
+            LocalDate birthDate = LocalDate.parse(birthDateStr);
+            LocalDate now = LocalDate.now();
+            
+            if (birthDate.isAfter(now)) {
+                return Response.error(ResponseStatus.BAD_REQUEST, 
+                    "Fecha de nacimiento no puede ser futura");
             }
         } catch (DateTimeParseException e) {
-            return Response.error(ResponseStatus.BAD_REQUEST, "Formato de fecha inválido. Use YYYY-MM-DD");
-        }
-
-        // Validación 4: Código telefónico (máximo 3 dígitos, positivo)
-        if (phoneCode < 0) {
-            return Response.error(ResponseStatus.BAD_REQUEST, "El código telefónico debe ser positivo");
-        }
-        if (String.valueOf(phoneCode).length() > MAX_PHONE_CODE_DIGITS) {
-            return Response.error(ResponseStatus.BAD_REQUEST, "El código telefónico debe tener máximo " + MAX_PHONE_CODE_DIGITS + " dígitos");
-        }
-
-        // Validación 5: Número telefónico (máximo 11 dígitos, positivo)
-        if (phoneNumber < 0) {
-            return Response.error(ResponseStatus.BAD_REQUEST, "El número telefónico debe ser positivo");
-        }
-        if (String.valueOf(phoneNumber).length() > MAX_PHONE_DIGITS) {
-            return Response.error(ResponseStatus.BAD_REQUEST, "El número telefónico debe tener máximo " + MAX_PHONE_DIGITS + " dígitos");
+            return Response.error(ResponseStatus.BAD_REQUEST, 
+                "Formato de fecha inválido (yyyy-MM-dd)");
         }
 
         return Response.success();
-    } 
+    }
 }

@@ -5,6 +5,10 @@
 package util.helpers;
 
 import java.time.LocalDateTime;
+import model.entities.Flight;
+import model.entities.Location;
+import model.entities.Plane;
+import model.repositories.impl.Repository;
 import util.constants.ErrorMessages;
 import util.enums.ResponseStatus;
 import util.responses.Response;
@@ -14,55 +18,59 @@ import util.responses.Response;
  * @author dubalaguilar
  */
 public class FlightValidator {
-     public static Response validate(
-        String flightId, 
-        String planeId, 
-        String departureLocationId, 
+    public static Response validateFlight(
+        String flightId,
+        String planeId,
+        String departureLocationId,
         String arrivalLocationId,
         String scaleLocationId,
         LocalDateTime departureDate,
-        int hoursArrival, int minutesArrival,
-        int hoursScale, int minutesScale
+        int hoursArrival,
+        int minutesArrival,
+        int hoursScale,
+        int minutesScale,
+        Repository<Flight, String> flightRepository,
+        Repository<Plane, String> planeRepository,
+        Repository<Location, String> locationRepository
     ) {
-        // Validar formato de ID de vuelo (XXXYYY)
-        if (!flightId.matches("^[A-Z]{3}\\d{3}$")) {
-            return Response.error(ResponseStatus.BAD_REQUEST, ErrorMessages.FLIGHT_ID_FORMAT);
+        // 1. Validar unicidad del ID
+        if (flightRepository.findById(flightId).isPresent()) {
+            return Response.error(ResponseStatus.CONFLICT, "Ya existe un vuelo con este ID");
         }
 
-        // Validar formatos de ubicaciones (3 letras mayúsculas)
-        if (!departureLocationId.matches("^[A-Z]{3}$") || !arrivalLocationId.matches("^[A-Z]{3}$")) {
-            return Response.error(ResponseStatus.BAD_REQUEST, ErrorMessages.LOCATION_ID_FORMAT);
+        // 2. Validar existencia del avión
+        if (!planeRepository.findById(planeId).isPresent()) {
+            return Response.error(ResponseStatus.NOT_FOUND, "Avión no encontrado");
         }
 
-        if (scaleLocationId != null && !scaleLocationId.matches("^[A-Z]{3}$")) {
-            return Response.error(ResponseStatus.BAD_REQUEST, ErrorMessages.LOCATION_ID_FORMAT);
+        // 3. Validar existencia de ubicaciones
+        if (!locationRepository.findById(departureLocationId).isPresent()) {
+            return Response.error(ResponseStatus.NOT_FOUND, "Ubicación de salida no encontrada");
+        }
+        if (!locationRepository.findById(arrivalLocationId).isPresent()) {
+            return Response.error(ResponseStatus.NOT_FOUND, "Ubicación de llegada no encontrada");
         }
 
-        // Validar que la ubicación de salida y llegada sean diferentes
-        if (departureLocationId.equals(arrivalLocationId)) {
-            return Response.error(ResponseStatus.BAD_REQUEST, "El aeropuerto de salida y llegada no pueden ser iguales");
+        // 4. Validar ubicación de escala si existe
+        if (scaleLocationId != null && !locationRepository.findById(scaleLocationId).isPresent()) {
+            return Response.error(ResponseStatus.NOT_FOUND, "Ubicación de escala no encontrada");
         }
 
-        // Validar fechas (no en pasado)
+        // 5. Validar fecha futura
         if (departureDate.isBefore(LocalDateTime.now())) {
-            return Response.error(ResponseStatus.BAD_REQUEST, ErrorMessages.FLIGHT_DATE_PAST);
+            return Response.error(ResponseStatus.BAD_REQUEST, "La fecha de salida debe ser futura");
         }
 
-        // Validar tiempo de vuelo total
-        if (hoursArrival <= 0 && minutesArrival <= 0) {
-            return Response.error(ResponseStatus.BAD_REQUEST, ErrorMessages.FLIGHT_DURATION_INVALID);
+        // 6. Validar que origen y destino sean diferentes
+        if (departureLocationId.equals(arrivalLocationId)) {
+            return Response.error(ResponseStatus.BAD_REQUEST, "Origen y destino no pueden ser iguales");
         }
 
-        // Validar escala
-        if (scaleLocationId != null) {
-            if (hoursScale <= 0 && minutesScale <= 0) {
-                return Response.error(ResponseStatus.BAD_REQUEST, ErrorMessages.SCALE_TIME_INVALID);
-            }
-        } else {
-            if (hoursScale != 0 || minutesScale != 0) {
-                return Response.error(ResponseStatus.BAD_REQUEST, 
-                    "No se puede tener tiempo de escala sin aeropuerto de escala");
-            }
+        // 7. Validar que escala no sea igual a origen/destino
+        if (scaleLocationId != null && 
+            (scaleLocationId.equals(departureLocationId) || scaleLocationId.equals(arrivalLocationId))) {
+            return Response.error(ResponseStatus.BAD_REQUEST, 
+                "La escala no puede ser igual al origen o destino");
         }
 
         return Response.success();

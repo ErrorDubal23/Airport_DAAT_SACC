@@ -37,32 +37,34 @@ public class PlaneService {
         String planeId,
         String brand,
         String model,
-        String maxCapacityStr,
+        int maxCapacity,
         String airline
     ) {
-        // Validación
-        Response validation = PlaneValidator.validate(
-            planeId, brand, model, maxCapacityStr, airline
-        );
-        if (!validation.isSuccess()) {
-            return validation;
-        }
-
-        // Verificar si el avión ya existe
-        if (planeRepository.findById(planeId).isPresent()) {
-            return Response.error(ResponseStatus.CONFLICT, "Ya existe un avión con este ID");
-        }
-
-        // Crear y guardar el avión
         try {
-            int maxCapacity = Integer.parseInt(maxCapacityStr);
+            // Validar unicidad del ID
+            if (planeRepository.findById(planeId).isPresent()) {
+                return Response.error(ResponseStatus.CONFLICT, 
+                    "Ya existe un avión con este ID");
+            }
+
+            // Validaciones específicas con PlaneValidator
+            Response validation = PlaneValidator.validateDomainRules(
+                planeId, brand, model, maxCapacity, airline
+            );
+            if (!validation.isSuccess()) {
+                return validation;
+            }
+
+            // Crear y guardar el avión
             Plane plane = new Plane(planeId, brand, model, maxCapacity, airline);
             planeRepository.add(plane);
-            return Response.success(ResponseStatus.CREATED, "Avión registrado exitosamente", plane);
-        } catch (NumberFormatException e) {
-            return Response.error(ResponseStatus.BAD_REQUEST, "La capacidad máxima debe ser un número válido");
+            
+            return Response.success(ResponseStatus.CREATED, 
+                "Avión registrado exitosamente", plane);
+            
         } catch (Exception e) {
-            return Response.error(ResponseStatus.INTERNAL_ERROR, "Error al registrar avión: " + e.getMessage());
+            return Response.error(ResponseStatus.INTERNAL_ERROR, 
+                "Error al registrar avión: " + e.getMessage());
         }
     }
 

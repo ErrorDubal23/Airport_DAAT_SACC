@@ -35,4 +35,6 @@ public class LocationRepository extends BaseRepositoryImpl<Location, String> {
                 .filter(location -> location.getAirportCountry().equalsIgnoreCase(country))
                 .toList();
     }
+    
+    
 }

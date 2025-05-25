@@ -13,33 +13,38 @@ import util.responses.Response;
  * @author dubalaguilar
  */
 public class PlaneValidator {
-    private static final int MODEL_YEAR_DIGITS = 5;
-
-    public static Response validate(
+    public static Response validateDomainRules(
         String planeId,
         String brand,
         String model,
-        String maxCapacityStr,
+        int maxCapacity,
         String airline
     ) {
-        // Validación 1: Campos no vacíos
-        if (planeId.isEmpty() || brand.isEmpty() || model.isEmpty() || maxCapacityStr.isEmpty() || airline.isEmpty()) {
-            return Response.error(ResponseStatus.BAD_REQUEST, ErrorMessages.FIELD_REQUIRED);
+        // Validación de longitud mínima para marca/modelo/aerolínea
+        if (brand.length() < 2) {
+            return Response.error(ResponseStatus.BAD_REQUEST, 
+                "La marca debe tener al menos 2 caracteres");
         }
 
-        // Validación 2: Formato del ID (XXYYYYY)
-        if (!planeId.matches("^[A-Z]{2}\\d{5}$")) {
-            return Response.error(ResponseStatus.BAD_REQUEST, "ID de avión inválido: debe ser XXYYYYY (2 letras + 5 dígitos)");
+        if (model.length() < 1) {
+            return Response.error(ResponseStatus.BAD_REQUEST, 
+                "El modelo no puede estar vacío");
         }
 
-        // Validación 3: Capacidad máxima numérica y positiva
-        try {
-            int maxCapacity = Integer.parseInt(maxCapacityStr);
-            if (maxCapacity <= 0) {
-                return Response.error(ResponseStatus.BAD_REQUEST, "La capacidad máxima debe ser un número positivo");
-            }
-        } catch (NumberFormatException e) {
-            return Response.error(ResponseStatus.BAD_REQUEST, "La capacidad máxima debe ser un número válido");
+        if (airline.length() < 2) {
+            return Response.error(ResponseStatus.BAD_REQUEST, 
+                "El nombre de la aerolínea debe tener al menos 2 caracteres");
+        }
+
+        // Validación de caracteres permitidos
+        if (!brand.matches("^[a-zA-Z0-9\\s-]+$")) {
+            return Response.error(ResponseStatus.BAD_REQUEST, 
+                "La marca contiene caracteres no permitidos");
+        }
+
+        if (!model.matches("^[a-zA-Z0-9\\s-]+$")) {
+            return Response.error(ResponseStatus.BAD_REQUEST, 
+                "El modelo contiene caracteres no permitidos");
         }
 
         return Response.success();
