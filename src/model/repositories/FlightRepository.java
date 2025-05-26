@@ -5,6 +5,7 @@
 package model.repositories;
 
 import java.util.List;
+import java.util.Optional;
 import model.entities.Flight;
 import model.repositories.impl.BaseRepositoryImpl;
 
@@ -41,4 +42,5 @@ public class FlightRepository extends BaseRepositoryImpl<Flight, String> {
                 .filter(flight -> flight.getDepartureLocation().getAirportId().equals(locationId))
                 .toList();
     }
+    
 }

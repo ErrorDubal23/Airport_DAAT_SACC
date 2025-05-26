@@ -6,7 +6,7 @@ package controller;
 
 import java.util.List;
 import model.entities.Plane;
-import model.services.PlaneService;
+import controller.services.PlaneService;
 import util.enums.ResponseStatus;
 import util.responses.Response;
 

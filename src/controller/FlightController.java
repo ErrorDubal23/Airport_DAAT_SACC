@@ -6,7 +6,7 @@ package controller;
 
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
-import model.services.FlightService;
+import controller.services.FlightService;
 import util.constants.ErrorMessages;
 import util.enums.ResponseStatus;
 import util.responses.Response;

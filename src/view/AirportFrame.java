@@ -20,6 +20,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import model.json.UploudJSONToFlightRepository;
+import model.json.UploudJSONToLocationRepository;
+import model.json.UploudJSONToPassengerRepository;
+import model.json.UploudJSONToPlaneRepository;
 import model.repositories.FlightRepository;
 import model.repositories.LocationRepository;
 import model.repositories.PassengerRepository;
@@ -38,7 +42,10 @@ public class AirportFrame extends javax.swing.JFrame {
     private final LocationRepository locationRepo;
     private final FlightRepository flightRepo;
     private final PassengerController passengerController;
-
+    private UploudJSONToFlightRepository uploudJSONToFlightRepository;
+    private UploudJSONToLocationRepository uploudJSONToLocationRepository;
+    private UploudJSONToPassengerRepository uploudJSONToPassengerRepository;
+    private UploudJSONToPlaneRepository uploudJSONToPlaneRepository;
     public AirportFrame() {
         initComponents();
         this.passengerRepo = PassengerRepository.getInstance();
@@ -46,7 +53,23 @@ public class AirportFrame extends javax.swing.JFrame {
         this.locationRepo = LocationRepository.getInstance();
         this.flightRepo = FlightRepository.getInstance();
         this.passengerController = new PassengerController();
-
+        
+        String pathLocation = "json/locations.json";
+        String pathPassenger = "json/passengers.json";
+        String pathPlane = "json/planes.json";
+        String pathFlight = "json/flights.json";
+        this.uploudJSONToLocationRepository = new UploudJSONToLocationRepository(pathLocation);
+        this.uploudJSONToPassengerRepository = new UploudJSONToPassengerRepository(pathPassenger);
+        this.uploudJSONToPlaneRepository =  new UploudJSONToPlaneRepository(pathPlane);
+        this.uploudJSONToFlightRepository = new UploudJSONToFlightRepository(pathFlight);
+        uploudJSONToLocationRepository.uploud();
+        uploudJSONToPassengerRepository.uploud();
+        uploudJSONToPlaneRepository.uploud();
+        uploudJSONToFlightRepository.uploud();
+        
+        //for(Plane plane: planeRepo.findAll()){
+        //    System.out.println(plane);
+        //}
         this.setBackground(new Color(0, 0, 0, 0));
         this.setLocationRelativeTo(null);
 
@@ -1615,6 +1638,7 @@ public class AirportFrame extends javax.swing.JFrame {
             if (response.isSuccess()) {
                 JOptionPane.showMessageDialog(this, "Vuelo registrado exitosamente");
                 this.flightsComboBox.addItem(id.trim().toUpperCase());
+                this.idFlightDelayedComboBox.addItem(id.trim().toUpperCase());
                 clearFlightFields();
             } else {
                 JOptionPane.showMessageDialog(this,
@@ -1709,14 +1733,6 @@ public class AirportFrame extends javax.swing.JFrame {
         String minutesStr = minutesDelayedComboBox.getSelectedItem() != null
                 ? minutesDelayedComboBox.getSelectedItem().toString() : "";
 
-        // Validar selección de vuelo
-        if (flightId.isEmpty()) {
-            JOptionPane.showMessageDialog(this,
-                    "Seleccione un vuelo válido",
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
-            return;
-        }
 
         // Usar el controlador
         FlightController controller = new FlightController();

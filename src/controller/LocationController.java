@@ -6,7 +6,7 @@ package controller;
 
 import java.util.List;
 import model.entities.Location;
-import model.services.LocationService;
+import controller.services.LocationService;
 import util.constants.ErrorMessages;
 import util.enums.ResponseStatus;
 import util.responses.Response;

@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 import model.entities.Flight;
 import model.entities.Passenger;
-import model.services.PassengerService;
+import controller.services.PassengerService;
 import util.constants.ErrorMessages;
 import util.enums.ResponseStatus;
 import util.responses.Response;

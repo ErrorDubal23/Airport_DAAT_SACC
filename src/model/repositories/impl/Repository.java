@@ -19,4 +19,5 @@ public interface Repository<T, ID> {
     List<T> findAll();
     boolean exists(ID id);
     boolean update(T item);
+    T getByID(ID id);
 }

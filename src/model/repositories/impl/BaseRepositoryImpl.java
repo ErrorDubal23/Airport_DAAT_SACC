@@ -36,7 +36,20 @@ public abstract class  BaseRepositoryImpl<T, ID> implements Repository <T, ID>{
                 .filter(item -> getId(item).equals(id))
                 .findFirst();
     }
-
+    
+    @Override
+    public T getByID(ID id) {
+        //return items.stream()
+          //      .filter(item -> getId(item).equals(id))
+            //    .findFirst();
+        for (T item: items){
+            if(getId(item).equals(id)){
+                return item;
+            }
+        }
+        return null;
+    }
+    
     @Override
     public List<T> findAll() {
         return new ArrayList<>(items); // Retorna copia para evitar modificaciones de otros lados
