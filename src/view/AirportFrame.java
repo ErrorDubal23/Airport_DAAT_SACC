@@ -1835,8 +1835,7 @@ public class AirportFrame extends javax.swing.JFrame {
                         "Éxito",
                         JOptionPane.INFORMATION_MESSAGE);
 
-                // Actualizar la tabla de vuelos
-                btnRefreshFllightsTableActionPerformed(null);
+                
 
                 clearDelayFlight();
             } else {

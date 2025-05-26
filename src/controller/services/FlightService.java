@@ -109,31 +109,31 @@ public class FlightService {
 
     public Response delayFlight(String flightId, int hours, int minutes) {
         try {
-            // Buscar el vuelo
-            Optional<Flight> flightOpt = flightRepository.findById(flightId);
-
-            if (flightOpt.isEmpty()) {
-                return Response.error(ResponseStatus.NOT_FOUND,
-                        "Vuelo no encontrado");
-            }
-
-            Flight flight = flightOpt.get();
-
-            // Validar que el vuelo no haya despegado aun
-            if (flight.getDepartureDate().isBefore(LocalDateTime.now())) {
-                return Response.error(ResponseStatus.BAD_REQUEST,
-                        "No se puede retrasar un vuelo que ya ha despegado");
-            }
-
-            // Aplicar el retraso
-            flight.delay(hours, minutes);
-
-            return Response.success("Vuelo retrasado exitosamente", flight);
-
-        } catch (Exception e) {
-            return Response.error(ResponseStatus.INTERNAL_ERROR,
-                    "Error al retrasar vuelo: " + e.getMessage());
+        // Obtener el vuelo ORIGINAL (usar getByID en lugar de findById)
+        Flight flight = flightRepository.getByID(flightId);
+        
+        if (flight == null) {
+            return Response.error(ResponseStatus.NOT_FOUND, "Vuelo no encontrado");
         }
+
+        // Validar que el vuelo no haya despegado
+        if (flight.getDepartureDate().isBefore(LocalDateTime.now())) {
+            return Response.error(ResponseStatus.BAD_REQUEST,
+                    "No se puede retrasar un vuelo que ya ha despegado");
+        }
+
+        // Aplicar el retraso al vuelo ORIGINAL
+        flight.delay(hours, minutes);
+
+        // Actualizar el vuelo en el repositorio
+        flightRepository.update(flight);
+
+        return Response.success("Vuelo retrasado exitosamente", flight.clone());
+
+    } catch (Exception e) {
+        return Response.error(ResponseStatus.INTERNAL_ERROR,
+                "Error al retrasar vuelo: " + e.getMessage());
+    }
     }
 
     public List<Flight> getAllFlightsSorted() {
