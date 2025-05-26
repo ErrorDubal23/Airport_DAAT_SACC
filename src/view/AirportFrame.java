@@ -68,6 +68,11 @@ public class AirportFrame extends javax.swing.JFrame {
         uploudJSONToPlaneRepository.uploud();
         uploudJSONToFlightRepository.uploud();
 
+        loadFlightIdsToComboBox();
+        loadPlaneToComboBox();
+        loadLocationToComboBox();
+        loadPassengerToComboBox();
+
         //for(Plane plane: planeRepo.findAll()){
         //    System.out.println(plane);
         //}
@@ -79,6 +84,39 @@ public class AirportFrame extends javax.swing.JFrame {
         this.generateHours();
         this.generateMinutes();
         this.blockPanels();
+    }
+
+    private void loadFlightIdsToComboBox() {
+        List<Flight> flights = FlightRepository.getInstance().findAll();
+        flights.forEach(flight -> {
+            idFlightDelayedComboBox.addItem(flight.getId());
+            flightsComboBox.addItem(flight.getId());
+        });
+    }
+
+    private void loadPlaneToComboBox() {
+        List<Plane> planes = PlaneRepository.getInstance().findAll();
+        planes.forEach(plane -> {
+            registrationFlightPlaneComboBox.addItem(plane.getId());
+        });
+    }
+
+    private void loadLocationToComboBox() {
+        List<Location> locations = LocationRepository.getInstance().findAll();
+
+        locations.forEach(location -> {
+            registrationFlightDepartureLocationComboBox.addItem(location.getAirportId());
+            registrationFlightArrivalLocationComboBox.addItem(location.getAirportId());
+            registrationFlightScaleLocationComboBox.addItem(location.getAirportId());
+
+        });
+    }
+
+    private void loadPassengerToComboBox() {
+        List<Passenger> passengers = PassengerRepository.getInstance().findAll();
+        passengers.forEach(passenger -> {
+            userSelectComboBox.addItem(String.valueOf(passenger.getId()));
+        });
     }
 
     private void clearPassengerFields() {
