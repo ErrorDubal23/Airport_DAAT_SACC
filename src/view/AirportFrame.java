@@ -46,6 +46,7 @@ public class AirportFrame extends javax.swing.JFrame {
     private UploudJSONToLocationRepository uploudJSONToLocationRepository;
     private UploudJSONToPassengerRepository uploudJSONToPassengerRepository;
     private UploudJSONToPlaneRepository uploudJSONToPlaneRepository;
+
     public AirportFrame() {
         initComponents();
         this.passengerRepo = PassengerRepository.getInstance();
@@ -53,20 +54,20 @@ public class AirportFrame extends javax.swing.JFrame {
         this.locationRepo = LocationRepository.getInstance();
         this.flightRepo = FlightRepository.getInstance();
         this.passengerController = new PassengerController();
-        
+
         String pathLocation = "json/locations.json";
         String pathPassenger = "json/passengers.json";
         String pathPlane = "json/planes.json";
         String pathFlight = "json/flights.json";
         this.uploudJSONToLocationRepository = new UploudJSONToLocationRepository(pathLocation);
         this.uploudJSONToPassengerRepository = new UploudJSONToPassengerRepository(pathPassenger);
-        this.uploudJSONToPlaneRepository =  new UploudJSONToPlaneRepository(pathPlane);
+        this.uploudJSONToPlaneRepository = new UploudJSONToPlaneRepository(pathPlane);
         this.uploudJSONToFlightRepository = new UploudJSONToFlightRepository(pathFlight);
         uploudJSONToLocationRepository.uploud();
         uploudJSONToPassengerRepository.uploud();
         uploudJSONToPlaneRepository.uploud();
         uploudJSONToFlightRepository.uploud();
-        
+
         //for(Plane plane: planeRepo.findAll()){
         //    System.out.println(plane);
         //}
@@ -88,7 +89,8 @@ public class AirportFrame extends javax.swing.JFrame {
         registrationPassagerPhoneCodeTextField.setText("");
         registrationPassagerPhoneTextField.setText("");
         registrationPassagerCountryTextField.setText("");
-        
+        registrationPassagerBirthMounthComboBox.setSelectedIndex(0);
+        registrationPassagerBirthDayComboBox.setSelectedIndex(0);
     }
 
     private void clearLocationFields() {
@@ -111,7 +113,40 @@ public class AirportFrame extends javax.swing.JFrame {
     private void clearFlightFields() {
         registrationFlightIdTextField.setText("");
         registrationFlightDepartureDateTextField.setText("");
-        
+        registrationFlightPlaneComboBox.setSelectedIndex(0);
+        registrationFlightDepartureLocationComboBox.setSelectedIndex(0);
+        registrationFlightArrivalLocationComboBox.setSelectedIndex(0);
+        registrationFlightScaleLocationComboBox.setSelectedIndex(0);
+        registrationFlightDepartureMounthComboBox.setSelectedIndex(0);
+        registrationFlightDepartureDayComboBox.setSelectedIndex(0);
+        registrationFlightDepartureHourComboBox.setSelectedIndex(0);
+        registrationFlightDepartureMinuteComboBox.setSelectedIndex(0);
+        registrationFlightArrivalHourComboBox.setSelectedIndex(0);
+        registrationFlightArrivalMinuteComboBox.setSelectedIndex(0);
+        registrationFlightScaleHourComboBox.setSelectedIndex(0);
+        registrationFlightScaleMinuteComboBox.setSelectedIndex(0);
+    }
+
+    private void clearAddPassengerToFlight() {
+        updatePassagerBirthMountComboBox.setSelectedIndex(0);
+    }
+
+    private void clearUpdatePassenger() {
+        updatePassagerIdTextField.setText("");
+        updatePassagerFirstNameTextField.setText("");
+        updatePassagerLastNameTextField.setText("");
+        updatePassagerBirthYearTextField.setText("");
+        updatePassagerPhoneCodeTextField.setText("");
+        updatePassagerPhoneTextField.setText("");
+        updatePassagerCountryTextField.setText("");
+        updatePassagerBirthMountComboBox.setSelectedIndex(0);
+        updatePassagerBirthDayComboBox.setSelectedIndex(0);
+
+    }
+
+    private void clearDelayFlight() {
+        hoursDelayedComboBox.setSelectedIndex(0);
+        minutesDelayedComboBox.setSelectedIndex(0);
     }
 
     private void blockPanels() {
@@ -1565,8 +1600,6 @@ public class AirportFrame extends javax.swing.JFrame {
             String latitudeStr = registrationAirportLatitudeTextField.getText().trim();
             String longitudeStr = registrationAirportLongitudeTextField.getText().trim();
 
-            
-
             // Usar el controlador para registrar la ubicación
             LocationController locationController = new LocationController();
             Response response = locationController.registerLocation(
@@ -1609,13 +1642,13 @@ public class AirportFrame extends javax.swing.JFrame {
             String scaleLocationId = registrationFlightScaleLocationComboBox.getSelectedItem().toString();
 
             // Manejar escala opcional
-            String hoursScaleStr = "0";  
+            String hoursScaleStr = "0";
             String minutesScaleStr = "0";
 
             if (!scaleLocationId.isEmpty()) {
-            hoursScaleStr = registrationFlightScaleHourComboBox.getSelectedItem().toString();
-            minutesScaleStr = registrationFlightScaleMinuteComboBox.getSelectedItem().toString();
-        }
+                hoursScaleStr = registrationFlightScaleHourComboBox.getSelectedItem().toString();
+                minutesScaleStr = registrationFlightScaleMinuteComboBox.getSelectedItem().toString();
+            }
 
             // Resto de datos
             String year = registrationFlightDepartureDateTextField.getText();
@@ -1655,53 +1688,48 @@ public class AirportFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCreateFlightActionPerformed
 
     private void btnUpdatePassagerInfoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdatePassagerInfoActionPerformed
-        try {
-            // Obtener datos del formulario
-            String idStr = updatePassagerIdTextField.getText().trim();
-            String firstname = updatePassagerFirstNameTextField.getText().trim();
-            String lastname = updatePassagerLastNameTextField.getText().trim();
-            String yearStr = updatePassagerBirthYearTextField.getText().trim();
-            String monthStr = updatePassagerBirthMountComboBox.getItemAt(updatePassagerBirthMountComboBox.getSelectedIndex()).toString();
-            String dayStr = updatePassagerBirthDayComboBox.getItemAt(updatePassagerBirthDayComboBox.getSelectedIndex()).toString();
-            String phoneCodeStr = updatePassagerPhoneCodeTextField.getText().trim();
-            String phoneStr = updatePassagerPhoneTextField.getText().trim();
-            String country = updatePassagerCountryTextField.getText().trim();
 
-            // Validar campos vacíos
-            if (idStr.isEmpty() || firstname.isEmpty() || lastname.isEmpty()
-                    || yearStr.isEmpty() || phoneCodeStr.isEmpty() || phoneStr.isEmpty() || country.isEmpty()) {
-                JOptionPane.showMessageDialog(this,
-                        "Todos los campos son obligatorios",
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE);
-                return;
-            }
+        // Obtener datos del formulario
+        String idStr = updatePassagerIdTextField.getText().trim();
+        String firstname = updatePassagerFirstNameTextField.getText().trim();
+        String lastname = updatePassagerLastNameTextField.getText().trim();
+        String yearStr = updatePassagerBirthYearTextField.getText().trim();
+        String monthStr = updatePassagerBirthMountComboBox.getItemAt(updatePassagerBirthMountComboBox.getSelectedIndex()).toString();
+        String dayStr = updatePassagerBirthDayComboBox.getItemAt(updatePassagerBirthDayComboBox.getSelectedIndex()).toString();
+        String phoneCodeStr = updatePassagerPhoneCodeTextField.getText().trim();
+        String phoneStr = updatePassagerPhoneTextField.getText().trim();
+        String country = updatePassagerCountryTextField.getText().trim();
 
-            // Usar el controlador para actualizar el pasajero
-            PassengerController passengerController = new PassengerController();
-            Response response = passengerController.updatePassenger(
-                    idStr, firstname, lastname, yearStr, monthStr, dayStr,
-                    phoneCodeStr, phoneStr, country
-            );
-
-            if (response.isSuccess()) {
-                JOptionPane.showMessageDialog(this,
-                        "Información actualizada exitosamente",
-                        "Éxito",
-                        JOptionPane.INFORMATION_MESSAGE);
-
-            } else {
-                JOptionPane.showMessageDialog(this,
-                        response.getMessage(),
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE);
-            }
-        } catch (Exception e) {
+        // Validar campos vacíos
+        if (idStr.isEmpty() || firstname.isEmpty() || lastname.isEmpty()
+                || yearStr.isEmpty() || phoneCodeStr.isEmpty() || phoneStr.isEmpty() || country.isEmpty()) {
             JOptionPane.showMessageDialog(this,
-                    "Error al actualizar información: " + e.getMessage(),
+                    "Todos los campos son obligatorios",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Usar el controlador para actualizar el pasajero
+        PassengerController passengerController = new PassengerController();
+        Response response = passengerController.updatePassenger(
+                idStr, firstname, lastname, yearStr, monthStr, dayStr,
+                phoneCodeStr, phoneStr, country
+        );
+
+        if (response.isSuccess()) {
+            JOptionPane.showMessageDialog(this,
+                    "Información actualizada exitosamente",
+                    "Éxito",
+                    JOptionPane.INFORMATION_MESSAGE);
+            clearUpdatePassenger();
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    response.getMessage(),
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
         }
+
 
     }//GEN-LAST:event_btnUpdatePassagerInfoActionPerformed
 
@@ -1714,7 +1742,7 @@ public class AirportFrame extends javax.swing.JFrame {
 
         if (response.isSuccess()) {
             JOptionPane.showMessageDialog(this, "Pasajero añadido al vuelo exitosamente");
-            btnRefreshFllightsTableActionPerformed(null); // Refrescar la tabla
+            clearAddPassengerToFlight();
         } else {
             JOptionPane.showMessageDialog(this,
                     response.getMessage(),
@@ -1725,43 +1753,40 @@ public class AirportFrame extends javax.swing.JFrame {
 
     private void btnDelayFlightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDelayFlightActionPerformed
         try {
-        // Obtener datos del formulario
-        String flightId = idFlightDelayedComboBox.getSelectedItem() != null
-                ? idFlightDelayedComboBox.getSelectedItem().toString() : "";
-        String hoursStr = hoursDelayedComboBox.getSelectedItem() != null
-                ? hoursDelayedComboBox.getSelectedItem().toString() : "";
-        String minutesStr = minutesDelayedComboBox.getSelectedItem() != null
-                ? minutesDelayedComboBox.getSelectedItem().toString() : "";
+            // Obtener datos del formulario
+            String flightId = idFlightDelayedComboBox.getSelectedItem() != null
+                    ? idFlightDelayedComboBox.getSelectedItem().toString() : "";
+            String hoursStr = hoursDelayedComboBox.getSelectedItem() != null
+                    ? hoursDelayedComboBox.getSelectedItem().toString() : "";
+            String minutesStr = minutesDelayedComboBox.getSelectedItem() != null
+                    ? minutesDelayedComboBox.getSelectedItem().toString() : "";
 
+            // Usar el controlador
+            FlightController controller = new FlightController();
+            Response response = controller.delayFlight(flightId, hoursStr, minutesStr);
 
-        // Usar el controlador
-        FlightController controller = new FlightController();
-        Response response = controller.delayFlight(flightId, hoursStr, minutesStr);
+            if (response.isSuccess()) {
+                JOptionPane.showMessageDialog(this,
+                        "Vuelo retrasado exitosamente",
+                        "Éxito",
+                        JOptionPane.INFORMATION_MESSAGE);
 
-        if (response.isSuccess()) {
+                // Actualizar la tabla de vuelos
+                btnRefreshFllightsTableActionPerformed(null);
+
+                clearDelayFlight();
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        response.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(this,
-                    "Vuelo retrasado exitosamente",
-                    "Éxito",
-                    JOptionPane.INFORMATION_MESSAGE);
-
-            // Actualizar la tabla de vuelos
-            btnRefreshFllightsTableActionPerformed(null);
-            
-            // Limpiar selección
-            hoursDelayedComboBox.setSelectedIndex(0);
-            minutesDelayedComboBox.setSelectedIndex(0);
-        } else {
-            JOptionPane.showMessageDialog(this,
-                    response.getMessage(),
+                    "Error inesperado: " + e.getMessage(),
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
         }
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(this,
-                "Error inesperado: " + e.getMessage(),
-                "Error",
-                JOptionPane.ERROR_MESSAGE);
-    }
     }//GEN-LAST:event_btnDelayFlightActionPerformed
 
     private void btnRefreshMyFlightsTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshMyFlightsTableActionPerformed
