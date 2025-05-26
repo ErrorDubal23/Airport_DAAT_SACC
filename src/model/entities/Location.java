@@ -8,8 +8,8 @@ package model.entities;
  *
  * @author edangulo
  */
-public class Location {
-    
+public class Location implements Cloneable {
+
     private final String airportId;
     private String airportName;
     private String airportCity;
@@ -49,5 +49,14 @@ public class Location {
     public double getAirportLongitude() {
         return airportLongitude;
     }
-    
+
+    @Override
+    public Location clone() {
+        try {
+            return (Location) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError("Error al clonar Location", e);
+        }
+    }
+
 }

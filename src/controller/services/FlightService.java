@@ -144,20 +144,13 @@ public class FlightService {
 
     public Response addPassengerToFlight(long passengerId, String flightId) {
         try {
-            // Validar existencia del pasajero
-            Optional<Passenger> passengerOpt = PassengerRepository.getInstance().findById(passengerId);
-            if (passengerOpt.isEmpty()) {
-                return Response.error(ResponseStatus.NOT_FOUND, "Pasajero no encontrado");
-            }
 
-            // Validar existencia del vuelo
-            Optional<Flight> flightOpt = flightRepository.findById(flightId);
-            if (flightOpt.isEmpty()) {
-                return Response.error(ResponseStatus.NOT_FOUND, "Vuelo no encontrado");
-            }
+            Flight flight = flightRepository.getByID(flightId);
+            Passenger passenger = PassengerRepository.getInstance().getByID(passengerId);
 
-            Passenger passenger = passengerOpt.get();
-            Flight flight = flightOpt.get();
+            if (flight == null || passenger == null) {
+                return Response.error(ResponseStatus.NOT_FOUND, "Vuelo o pasajero no encontrado");
+            }
 
             // Validar capacidad del vuelo
             if (flight.getNumPassengers() >= flight.getPlane().getMaxCapacity()) {
@@ -165,11 +158,11 @@ public class FlightService {
             }
 
             // Validar que el pasajero no esté ya en el vuelo
-            if (flight.getPassengers().stream().anyMatch(p -> p.getId() == passengerId)) {
+            if (flight.getPassengers().contains(passenger)) {
                 return Response.error(ResponseStatus.CONFLICT, "El pasajero ya está registrado en este vuelo");
             }
 
-            //  Validar que el pasajero no tenga vuelos superpuestos
+            // Validar superposición de vuelos
             LocalDateTime departure = flight.getDepartureDate();
             LocalDateTime arrival = flight.calculateArrivalDate();
 
@@ -185,11 +178,15 @@ public class FlightService {
                         "El pasajero tiene otro vuelo en ese horario");
             }
 
-            // Añadir relación bidireccional
+            // Modificar las instancias originales
             passenger.addFlight(flight);
             flight.addPassenger(passenger);
 
-            return Response.success("Pasajero añadido al vuelo exitosamente", flight);
+            // Actualizar en los repositorios
+            flightRepository.update(flight);
+            PassengerRepository.getInstance().update(passenger);
+
+            return Response.success("Pasajero añadido al vuelo exitosamente", flight.clone());
 
         } catch (Exception e) {
             return Response.error(ResponseStatus.INTERNAL_ERROR,

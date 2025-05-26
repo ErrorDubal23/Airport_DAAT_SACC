@@ -12,8 +12,8 @@ import java.util.List;
  *
  * @author edangulo
  */
-public class Flight {
-    
+public class Flight implements Cloneable {
+
     private final String id;
     private ArrayList<Passenger> passengers;
     private Plane plane;
@@ -25,7 +25,6 @@ public class Flight {
     private int minutesDurationArrival;
     private int hoursDurationScale;
     private int minutesDurationScale;
-    
 
     public Flight(String id, Plane plane, Location departureLocation, Location arrivalLocation, LocalDateTime departureDate, int hoursDurationArrival, int minutesDurationArrival) {
         this.id = id;
@@ -36,7 +35,7 @@ public class Flight {
         this.departureDate = departureDate;
         this.hoursDurationArrival = hoursDurationArrival;
         this.minutesDurationArrival = minutesDurationArrival;
-        
+
         this.plane.addFlight(this);
         //Comentario para ver si funciona el git 
     }
@@ -53,14 +52,22 @@ public class Flight {
         this.minutesDurationArrival = minutesDurationArrival;
         this.hoursDurationScale = hoursDurationScale;
         this.minutesDurationScale = minutesDurationScale;
-        
+
         this.plane.addFlight(this);
     }
-    
+
     public void addPassenger(Passenger passenger) {
-        this.passengers.add(passenger);
+        if (this.passengers == null) {
+            this.passengers = new ArrayList<>();
+        }
+        if (!this.passengers.contains(passenger)) {
+            this.passengers.add(passenger);
+            if (!passenger.getFlights().contains(this)) {
+                passenger.addFlight(this);
+            }
+        }
     }
-    
+
     public String getId() {
         return id;
     }
@@ -104,27 +111,39 @@ public class Flight {
     public void setDepartureDate(LocalDateTime departureDate) {
         this.departureDate = departureDate;
     }
-    
+
     public LocalDateTime calculateArrivalDate() {
         return departureDate.plusHours(hoursDurationScale).plusHours(hoursDurationArrival).plusMinutes(minutesDurationScale).plusMinutes(minutesDurationArrival);
     }
-    
+
     public void delay(int hours, int minutes) {
-    // Validar que al menos uno de los valores sea positivo
-    if (hours <= 0 && minutes <= 0) {
-        throw new IllegalArgumentException("El retraso debe ser mayor que 00:00");
+        // Validar que al menos uno de los valores sea positivo
+        if (hours <= 0 && minutes <= 0) {
+            throw new IllegalArgumentException("El retraso debe ser mayor que 00:00");
+        }
+
+        // Aplicar el retraso
+        this.departureDate = this.departureDate.plusHours(hours).plusMinutes(minutes);
     }
-    
-    // Aplicar el retraso
-    this.departureDate = this.departureDate.plusHours(hours).plusMinutes(minutes);
-}
-    
+
     public int getNumPassengers() {
         return passengers.size();
     }
-    
+
     public List<Passenger> getPassengers() {
-    return new ArrayList<>(passengers); 
-}
-    
+        return new ArrayList<>(passengers);
+    }
+
+    @Override
+    public Flight clone() {
+        try {
+            Flight cloned = (Flight) super.clone();
+            cloned.passengers = new ArrayList<>(this.passengers);
+            cloned.plane = this.plane;
+            return cloned;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
+    }
+
 }

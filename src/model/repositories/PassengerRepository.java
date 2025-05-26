@@ -13,9 +13,11 @@ import model.repositories.impl.BaseRepositoryImpl;
  * @author dubalaguilar
  */
 public class PassengerRepository extends BaseRepositoryImpl<Passenger, Long> {
+
     private static PassengerRepository instance;
 
-    private PassengerRepository() {}
+    private PassengerRepository() {
+    }
 
     public static PassengerRepository getInstance() {
         if (instance == null) {
@@ -29,7 +31,6 @@ public class PassengerRepository extends BaseRepositoryImpl<Passenger, Long> {
         return passenger.getId();
     }
 
-    
     public List<Passenger> findByCountry(String country) {
         return items.stream()
                 .filter(passenger -> passenger.getCountry().equalsIgnoreCase(country))
@@ -40,5 +41,12 @@ public class PassengerRepository extends BaseRepositoryImpl<Passenger, Long> {
         return items.stream()
                 .filter(passenger -> passenger.getFullname().toLowerCase().contains(name.toLowerCase()))
                 .toList();
+    }
+
+    public Passenger getByID(long id) {
+        return items.stream()
+                .filter(p -> p.getId() == id)
+                .findFirst()
+                .orElse(null);
     }
 }

@@ -18,20 +18,21 @@ import util.responses.Response;
  * @author dubalaguilar
  */
 public class FlightValidator {
+
     public static Response validateFlight(
-        String flightId,
-        String planeId,
-        String departureLocationId,
-        String arrivalLocationId,
-        String scaleLocationId,
-        LocalDateTime departureDate,
-        int hoursArrival,
-        int minutesArrival,
-        int hoursScale,
-        int minutesScale,
-        Repository<Flight, String> flightRepository,
-        Repository<Plane, String> planeRepository,
-        Repository<Location, String> locationRepository
+            String flightId,
+            String planeId,
+            String departureLocationId,
+            String arrivalLocationId,
+            String scaleLocationId,
+            LocalDateTime departureDate,
+            int hoursArrival,
+            int minutesArrival,
+            int hoursScale,
+            int minutesScale,
+            Repository<Flight, String> flightRepository,
+            Repository<Plane, String> planeRepository,
+            Repository<Location, String> locationRepository
     ) {
         // Validar unicidad del ID
         if (flightRepository.findById(flightId).isPresent()) {
@@ -68,13 +69,13 @@ public class FlightValidator {
 
         // Validar que escala no sea igual a origen/destino
         if (hoursScale > 0 || minutesScale > 0) {
-        if (scaleLocationId != null && 
-            (scaleLocationId.equals(departureLocationId) || scaleLocationId.equals(arrivalLocationId))) {
-            return Response.error(ResponseStatus.BAD_REQUEST, 
-                "La escala no puede ser igual al origen o destino");
+            if (scaleLocationId != null
+                    && (scaleLocationId.equals(departureLocationId) || scaleLocationId.equals(arrivalLocationId))) {
+                return Response.error(ResponseStatus.BAD_REQUEST,
+                        "La escala no puede ser igual al origen o destino");
+            }
         }
-    }
 
-    return Response.success();
+        return Response.success();
     }
 }

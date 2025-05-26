@@ -13,8 +13,8 @@ import java.util.ArrayList;
  *
  * @author edangulo
  */
-public class Passenger {
-    
+public class Passenger implements Cloneable {
+
     private final long id;
     private String firstname;
     private String lastname;
@@ -39,9 +39,14 @@ public class Passenger {
         if (this.flights == null) {
             this.flights = new ArrayList<>();
         }
-        this.flights.add(flight);
+        if (!this.flights.contains(flight)) {
+            this.flights.add(flight);
+            if (!flight.getPassengers().contains(this)) {
+                flight.addPassenger(this);
+            }
+        }
     }
-    
+
     public long getId() {
         return id;
     }
@@ -97,11 +102,11 @@ public class Passenger {
     public void setCountry(String country) {
         this.country = country;
     }
-    
+
     public String getFullname() {
         return firstname + " " + lastname;
     }
-    
+
     public void setFlights(ArrayList<Flight> flights) {
         this.flights = flights != null ? new ArrayList<>(flights) : new ArrayList<>();
     }
@@ -109,13 +114,24 @@ public class Passenger {
     public String generateFullPhone() {
         return "+" + countryPhoneCode + " " + phone;
     }
-    
+
     public int calculateAge() {
         return Period.between(birthDate, LocalDate.now()).getYears();
     }
-    
+
     public int getNumFlights() {
         return flights.size();
     }
-    
+
+    @Override
+    public Passenger clone() {
+        try {
+            Passenger cloned = (Passenger) super.clone();
+            cloned.flights = new ArrayList<>(this.flights);
+            return cloned;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError("Error al clonar Passenger", e);
+        }
+    }
+
 }
