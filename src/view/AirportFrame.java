@@ -1927,12 +1927,13 @@ public class AirportFrame extends javax.swing.JFrame {
 
             if (response.isSuccess()) {
                 List<Flight> flights = (List<Flight>) response.getData();
-
+               
                 for (Flight flight : flights) {
                     model.addRow(new Object[]{
                         flight.getId(),
+                        
                         flight.getDepartureLocation().getAirportId(),
-                        flight.getArrivalLocation().getAirportId(),
+                        flight.getArrivalLocation() .getAirportId(),
                         (flight.getScaleLocation() != null ? flight.getScaleLocation().getAirportId() : "-"),
                         formatDateTime(flight.getDepartureDate()),
                         formatDateTime(flight.calculateArrivalDate()),
