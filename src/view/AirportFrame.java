@@ -84,6 +84,12 @@ public class AirportFrame extends javax.swing.JFrame {
         this.generateHours();
         this.generateMinutes();
         this.blockPanels();
+        
+        for (int i = 1; i < menujTabbedPane.getTabCount(); i++) {
+
+            menujTabbedPane.setEnabledAt(i, false);
+
+        }
     }
 
     private void loadFlightIdsToComboBox() {
@@ -1549,11 +1555,31 @@ public class AirportFrame extends javax.swing.JFrame {
             userSelectComboBox.setSelectedIndex(0);
 
         }
+        //Administration (0)
+        //Passager registration (1)
+        //Airplane registration (2)
+        //Location registration (3)
+        //Flight registration (4)
+        //Add to flight (5)
+        //Show my flights (6)
+        //Show all passengers (7)
+        //Show all flights (8)
+        //Show all planes (9)
+        //Show all locations (10)
+        //Delay flight (11)
+        //Update info (12)
         for (int i = 1; i < menujTabbedPane.getTabCount(); i++) {
-            menujTabbedPane.setEnabledAt(i, true); //Esto va ha ser false
+            menujTabbedPane.setEnabledAt(i, false); //Esto va ha ser false
         }
-        menujTabbedPane.setEnabledAt(5, false); //Y aqui pongo los true
-        menujTabbedPane.setEnabledAt(6, false);
+        menujTabbedPane.setEnabledAt(1, true);
+        menujTabbedPane.setEnabledAt(2, true);
+        menujTabbedPane.setEnabledAt(3, true);
+        menujTabbedPane.setEnabledAt(4, true);  //Y aqui pongo los true
+        menujTabbedPane.setEnabledAt(7, true);
+        menujTabbedPane.setEnabledAt(8, true);
+        menujTabbedPane.setEnabledAt(9, true);
+        menujTabbedPane.setEnabledAt(10, true);
+        menujTabbedPane.setEnabledAt(11, true);
     }//GEN-LAST:event_administratorActionPerformed
 
     private void userActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userActionPerformed
@@ -1565,11 +1591,11 @@ public class AirportFrame extends javax.swing.JFrame {
             menujTabbedPane.setEnabledAt(i, false);
 
         }
-        menujTabbedPane.setEnabledAt(9, true);
+        menujTabbedPane.setEnabledAt(8, true);
         menujTabbedPane.setEnabledAt(5, true);
         menujTabbedPane.setEnabledAt(6, true);
-        menujTabbedPane.setEnabledAt(7, true);
-        menujTabbedPane.setEnabledAt(11, true);
+        menujTabbedPane.setEnabledAt(10, true);
+        menujTabbedPane.setEnabledAt(12, true);
     }//GEN-LAST:event_userActionPerformed
 
     private void btnRegisterPassagerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegisterPassagerActionPerformed
